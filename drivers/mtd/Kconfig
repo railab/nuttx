@@ -903,6 +903,13 @@ config MX25RXX_SECTOR512
 	bool "Simulate 512 byte Erase Blocks"
 	default n
 
+config MX25RXX_HIGH_PERF
+	bool "High performance mode (L/H switch)"
+	default n
+	---help---
+		Run the chip in high performance mode: faster program and erase
+		at the cost of higher power consumption.
+
 config MX25RXX_PAGE128
 	bool "128 byte size pages"
 	default n

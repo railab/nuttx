@@ -488,7 +488,11 @@ int mx25rxx_erase_sector(FAR struct mx25rxx_dev_s *priv, off_t sector)
 
   do
     {
+#ifdef CONFIG_MX25RXX_HIGH_PERF
+      nxsched_usleep(10 * 1000);
+#else
       nxsched_usleep(50 * 1000);
+#endif
       mx25rxx_read_status(priv);
       status = priv->cmdbuf[0];
     }
@@ -1224,9 +1228,15 @@ FAR struct mtd_dev_s *mx25rxx_initialize(FAR struct qspi_dev_s *qspi,
       mx25rxx_command(dev->qspi, MX25R_EN4B);
     }
 
+#ifdef CONFIG_MX25RXX_HIGH_PERF
+  /* Set MTD device in high performance mode (L/H switch) */
+
+  mx25rxx_write_status_config(dev, MX25R_SR_QE, MX25R_CR_LH);
+#else
   /* Set MTD device in low power mode, with minimum dummy cycles */
 
   mx25rxx_write_status_config(dev, MX25R_SR_QE, 0x0000);
+#endif
 
   mx25rxx_read_status(dev);
   status = dev->cmdbuf[0];
