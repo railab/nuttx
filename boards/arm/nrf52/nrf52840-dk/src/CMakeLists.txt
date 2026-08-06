@@ -76,6 +76,10 @@ if(CONFIG_USBDEV_COMPOSITE)
   list(APPEND SRCS nrf52_composite.c)
 endif()
 
+if(CONFIG_USBMSC)
+  list(APPEND SRCS nrf52_usbmsc.c)
+endif()
+
 if(CONFIG_NRF52_QSPI)
   list(APPEND SRCS nrf52_mx25.c)
 endif()
