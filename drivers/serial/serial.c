@@ -510,12 +510,13 @@ static inline ssize_t uart_irqwrite(FAR uart_dev_t *dev,
       FAR const char *special = NULL;
       size_t nsent = buflen - offset;
 
-      if ((dev->tc_oflag & OCRNL) != 0)
+      if ((dev->tc_oflag & (OPOST | OCRNL)) == (OPOST | OCRNL))
         {
           special = memchr(&buffer[offset], '\r', nsent);
         }
 
-      if ((dev->tc_oflag & (ONLCR | ONLRET)) != 0)
+      if ((dev->tc_oflag & OPOST) != 0 &&
+          (dev->tc_oflag & (ONLCR | ONLRET)) != 0)
         {
           FAR const char *nl = memchr(&buffer[offset], '\n', nsent);
           if (nl != NULL && (special == NULL || nl < special))
@@ -1683,12 +1684,13 @@ static ssize_t uart_writev(FAR struct file *filep, FAR struct uio *uio)
        * post-processing.
        */
 
-      if ((dev->tc_oflag & OCRNL) != 0)
+      if ((dev->tc_oflag & (OPOST | OCRNL)) == (OPOST | OCRNL))
         {
           special = memchr(&segbuf[nseg], '\r', nsent);
         }
 
-      if ((dev->tc_oflag & (ONLCR | ONLRET)) != 0)
+      if ((dev->tc_oflag & OPOST) != 0 &&
+          (dev->tc_oflag & (ONLCR | ONLRET)) != 0)
         {
           FAR const char *nl = memchr(&segbuf[nseg], '\n', nsent);
           if (nl != NULL && (special == NULL || nl < special))
